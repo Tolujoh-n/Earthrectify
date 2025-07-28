@@ -8,11 +8,11 @@ module.exports = {
       provider: () =>
         new HDWalletProvider(
           process.env.MNEMONIC, // Your wallet's mnemonic
-          "https://sepolia.hedera.org" // RPC URL for Hedera Testnet
+          "https://testnet.hashio.io/api" // RPC URL for Hedera Testnet
         ),
-      network_id: "*", // Network ID for Hedera Testnet: 84532
+      network_id: "*", // Network ID for Hedera Testnet: 296
       gas: 8000000, // Gas limit
-      gasPrice: 1000000000, // Gas price (1 Gwei)
+      gasPrice: 350000000000, // Gas price (35 Gwei)
       timeoutBlocks: 200, // Increase timeout for deployment
       skipDryRun: true, // Skip dry run before migrations
     },
