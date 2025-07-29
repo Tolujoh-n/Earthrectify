@@ -35,7 +35,11 @@ const RegisterScreen = () => {
         );
 
         setLoading(false);
+        // Store user info and token separately for easy access
         localStorage.setItem("userInfo", JSON.stringify(data));
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+        }
         navigate("/");
       } catch (error: any) {
         setLoading(false);

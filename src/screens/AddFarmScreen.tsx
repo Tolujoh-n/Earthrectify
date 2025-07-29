@@ -20,7 +20,8 @@ const AddFarmScreen = () => {
 
   const submitHandler = async (e: any) => {
     e.preventDefault();
-    const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    // Get token from localStorage (set during registration/login)
+    const token = localStorage.getItem("token");
 
     const formData = new FormData();
     formData.append("farm_business_name", farmBusinessName);
@@ -44,7 +45,7 @@ const AddFarmScreen = () => {
       const config = {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${userInfo.token}`,
+          Authorization: token ? `Bearer ${token}` : "",
         },
       };
 
