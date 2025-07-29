@@ -1,0 +1,76 @@
+Jhonks Mobile prompt:
+I need your help to build a mobile App with React Native Expo(which is a suitable framework and work on android and ios same time) help will all the needed components and fully integrate it:
+Jhonks is a place were the company buys waste and raw materials from the people. so we are providing them a platform that we have the list of materials and users can register or login to enter the platform. select the materials they have for sell from the list of materials we have listed on the platform. add it to their bin (just like cart in ecommerce). select an agent and when the agent validate they see the product on their sale history.
+Here is the workflow of the application. There are 2 categories of users(sellers and Agents)
+
+A seller are the one that have waste materials they wanna sell and select an agent to drop the waste materials to, while an agent is another user on the platform (once someone register as an agent. has to be a normal user before can register as agent) the agent are the prople who collect waste meterials from the seller and measure them and input the accurate measurement for that specif seller on the platform and one that validate is done the seller see the bin in sales history table:
+
+Here is the technical explanation of how you will build this backend for me:
+For the Normal user:
+1. Users Register on the platform inputing (Username, email, first_name, last_name, home_address, state, phone_number, password and confirm_password)
+use jwt authentication and log them in automatically after registration. 
+2. Login with (Email or Username and password. )
+Note once registered and logged in they can now use the platform dashboard and on the dashboard they can now do this.
+3. Users Get the list of materials in their categories (Note also help me with the admin routes where me as the owner of the application can post materials on my platform) There are 3 categories: (househole_wastes, Industrial_waste and raw_meterials). Each has the list of materials we buy and each materials has this fields (Image, name, price_per_kg) and a button "check_details" on each material. when the button is clicked my frontend should redirect to the material details component where the seller can read full details about the material which include:  (Image, name, price_per_kg, category, descriptions, Excemptions(a list of instructions) and quantity ) quantity here is default to 1kg as this is a details page but the user can set the quantity (i have an input and a button (set kg) on details page uses can set quantity. ranges from 0 above.) after this i have a buttons, Add to Bin(which  add the product to bin)
+4. The Bin: this is where users can see the list of matarials they have added to the bin from the dashboard. each row display: (image, name, category, quantity, price(quantity * price_per_kg), and a delete icon) the delete icon should call the route to delete the product from the bin.
+5. Get an Agent: There is button under the Bin table in my UI "get and agent" that redirect here where we need this data This is where the user get the list of registered agent on the application. and they can also get each agent details. includes: (Agent_image, Agent_name, ratings, state, local_goverment_address, street_address, phone_number, open_hours(moday to sunday open and closing time)
+6. Add bank details component: routes for users to add lists of their banks details. (bank_name, account_number, account_name) and my frontend have a delete icon on each bank so when it's cliked the bank should be deleted
+6. Sell component: This is where I have perform 2 major functionslities:
+a. The seller see the appropriate list of materials and quantity set by the agent(this means the bin is validated)
+b. The seller select the payment account they wanna get the fund (from their list of their account  in No 6. )
+And i have a Sell button on my UI which when it's clicked this Validated bin in 6a and the selected  account in 6b is sent to sale history. And the Bin in cleared/deleted from seller Bin. Sale completed
+7. The Sale history: This is where the seller get the list of material they have sold. the table include: (datetime(the instant time they sell), Bin(The materials inside the bin validated), Quantity(the sum of all the quantity on the materials), Price (the sum of all the material price) and Status(Processing by default and the company admin can change it to paid)
+
+For the Agent (have to first be a normal user before becoming an agent):
+1. Register as an agent: the interested people fill the form inputing (verification_methods (NIN or Voters card), verification_number, active_email, Agent_image, Agent_name, state, local_goverment_address, street_address, phone_number, confirmation_code(set this to 123456 for now), open_hours(moday to sunday open and closing time)
+2. There is no special login for agent. I just need you give me the route that fetch user details. if the the user is registered as agent is succefful his role is now an agent so once login as users they see the feature and tools provided for agents. 
+3. Pending validation component: This where the Agent get the list of bins different sellers has push to them for validation (bin_id, date, seller_username, materials_list, meterials_quantity). And they can validate each of them by updateding the material (add to the material(viewing from the list of meterial companyadmin have put on the platform), delete from the material, set the quantity). and i have a button Validate which when UI clicked buy the agent this is now the validate bin the seller recieve in their sell component which i describe at No 6a. And the Bin Validation_status is change to true. Also note here the agent can view the seller account details (address, phone number etc)
+4. Validation History component: This is where agent get the list of bins they have validated. and each row has (bin_id, date, seller_username, materials_list, meterials_quantity, agent_profit=(meterials_quantity * agent_profit_per_kg)) for now set agent_profit_per_kg to be 20. Note that i have a button "Deliver Product" under this table in my UI component which when it's clicked All this table are expect to form a row in the Delivery history. and cleared/deleted from here.
+5. Delivery history this is where the agent get the list of the delivered product her has deliverd to the company and this table has this field: (Delivery_id, date, materials_list, total_qantity, total_profit(sum of the agent_profit in No 4.), pickup_status(In-Store or Delivered. In-store by default), agent_payment_status(processing or paid, processing by default))
+
+
+Note: every bin should have this status field for agent use (Validation_status(true/false), delivery_status(true/false))
+Note in the context of Bin and material: A bin is like a cart and materials is like products like ecommerce. but due to the concept of what jhonks do we describe them as bin and materials.
+Note: please make this mobile app very professional looking and smooth navigation
+
+Note: Ensure all my APIs are well integrated accurately and working perfectly. Here are the APIs below:
+Jhonks APIS:
+Authentication
+POST /api/auth/register - User registration
+POST /api/auth/login - User login
+GET /api/auth/me - Get current user (protected)
+Materials
+GET /api/materials - Get all materials
+GET /api/materials/category/:category - Get materials by category
+GET /api/materials/:id - Get specific material
+POST /api/materials - Create material (admin only)
+PATCH /api/materials/:id - Update material (admin only)
+DELETE /api/materials/:id - Delete material (admin only)
+Bin Management
+GET /api/bin - Get user's bin (protected)
+POST /api/bin/add - Add material to bin (protected)
+DELETE /api/bin/:materialId - Remove material from bin (protected)
+POST /api/bin/clear - Clear bin (protected)
+POST /api/bin/select-agent - Select agent (protected)
+Agent Management
+POST /api/agent/register - Register as agent (protected) (
+GET /api/agent/list - Get all agents
+GET /api/agent/:id - Get a specific agent details
+GET /api/agent/pending-validations - Get pending validations (agent only)
+POST /api/agent/validate/:binId - Validate bin (agent only)
+GET /api/agent/validation-history - Get validation history (agent only)
+POST /api/agent/delivery - Deliver bin (agent only)
+GET /api/agent/delivery-history - Get Delivery history (agent only)
+Sales
+POST /api/sales - Create sale (protected)
+GET /api/sales - Get sales history (protected)
+GET /api/sales/:id - Get specific sale (protected)
+Bank Details
+POST /api/bank - Add bank account (protected)
+GET /api/bank - Get user's bank accounts (protected)
+DELETE /api/bank/:id - Delete bank account (protected)
+
+
+
+
+https://github.com/my-Jhonks/node-backend
