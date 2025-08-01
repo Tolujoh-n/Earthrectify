@@ -1,8 +1,12 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../components/UserContext"; // adjust path
 
 const AddFarmScreen = () => {
+  const { user } = useUser();
+  const navigate = useNavigate();
+
   const [farmBusinessName, setFarmBusinessName] = useState("");
   const [country, setCountry] = useState("");
   const [farmAddress, setFarmAddress] = useState("");
@@ -16,12 +20,33 @@ const AddFarmScreen = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [farms, setFarms] = useState<any[]>([]);
 
-  const submitHandler = async (e: any) => {
+  useEffect(() => {
+    if (!user?.token) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
+
+  // optional: fetch farms to display
+  useEffect(() => {
+    const fetchFarms = async () => {
+      try {
+        const res = await axios.get("/api/farms");
+        setFarms(res.data);
+      } catch {}
+    };
+    fetchFarms();
+  }, []);
+
+  const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Get token from localStorage (set during registration/login)
-    const token = localStorage.getItem("token");
+    setError(null);
+
+    if (!user?.token) {
+      setError("You must be logged in");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("farm_business_name", farmBusinessName);
@@ -32,36 +57,26 @@ const AddFarmScreen = () => {
       JSON.stringify({ length: landLength, width: landWidth })
     );
     formData.append("is_new_farm", String(isNewFarm));
-    if (ownershipDocs)
-      formData.append("land_ownership_documents", ownershipDocs);
-    landPhotos.forEach((photo) => {
-      formData.append("land_photos", photo);
-    });
-    if (thumbnail) formData.append("thumbnail_image", thumbnail);
+    ownershipDocs && formData.append("land_ownership_documents", ownershipDocs);
+    landPhotos.forEach((file) => formData.append("land_photos", file));
+    thumbnail && formData.append("thumbnail_image", thumbnail);
     formData.append("phone_number", phoneNumber);
 
     try {
       setLoading(true);
-      const config = {
+      await axios.post("/api/farms", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: token ? `Bearer ${token}` : "",
+          Authorization: `Bearer ${user.token}`,
         },
-      };
-
-      await axios.post("/api/farms", formData, config);
+      });
       setLoading(false);
       navigate("/profile");
-    } catch (error: any) {
+    } catch (err: any) {
       setLoading(false);
-      setError(
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-      );
+      setError(err.response?.data?.message || err.message);
     }
   };
-
   return (
     <div className="p-4">
       <h1 className="text-3xl font-bold mb-4">Add a New Farm</h1>

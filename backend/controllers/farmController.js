@@ -4,54 +4,66 @@ const Farm = require("../models/farmModel");
 // @route   POST /api/farms
 // @access  Private
 const createFarm = async (req, res) => {
-  const {
-    farm_business_name,
-    country,
-    farm_address,
-    land_mass,
-    is_new_farm,
-    phone_number,
-  } = req.body;
+  try {
+    const {
+      farm_business_name,
+      country,
+      farm_address,
+      land_mass,
+      is_new_farm,
+      phone_number,
+    } = req.body;
 
-  const farm = new Farm({
-    user: req.user._id,
-    farm_business_name,
-    country,
-    farm_address,
-    land_mass,
-    is_new_farm,
-    land_ownership_documents: req.files.land_ownership_documents[0].path,
-    land_photos: req.files.land_photos.map((file) => file.path),
-    thumbnail_image: req.files.thumbnail_image[0].path,
-    phone_number,
-  });
+    // Parse land_mass string to object
+    const parsedLandMass = JSON.parse(land_mass || "{}");
 
-  const createdFarm = await farm.save();
-  res.status(201).json(createdFarm);
+    const farm = new Farm({
+      user: req.user._id,
+      farm_business_name,
+      country,
+      farm_address,
+      land_mass: {
+        length: parsedLandMass.length,
+        width: parsedLandMass.width,
+      },
+      is_new_farm,
+      land_ownership_documents: req.files.land_ownership_documents?.[0]?.path,
+      land_photos: req.files.land_photos?.map((file) => file.path) || [],
+      thumbnail_image: req.files.thumbnail_image?.[0]?.path,
+      phone_number,
+    });
+
+    const createdFarm = await farm.save();
+    res.status(201).json(createdFarm);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
 
 // @desc    Get all farms
 // @route   GET /api/farms
 // @access  Public
 const getFarms = async (req, res) => {
-    const { search, filter } = req.query;
-    const keyword = search ? { name: { $regex: search, $options: 'i' } } : {};
+  const { search, filter } = req.query;
+  const keyword = search ? { name: { $regex: search, $options: "i" } } : {};
 
-    let sortOrder = {};
-    if (filter === 'recent') {
-        sortOrder = { createdAt: -1 };
-    } else if (filter === 'yield_high_to_low') {
-        sortOrder = { carbon_credit_yield: -1 };
-    } else if (filter === 'yield_low_to_high') {
-        sortOrder = { carbon_credit_yield: 1 };
-    }
+  let sortOrder = {};
+  if (filter === "recent") {
+    sortOrder = { createdAt: -1 };
+  } else if (filter === "yield_high_to_low") {
+    sortOrder = { carbon_credit_yield: -1 };
+  } else if (filter === "yield_low_to_high") {
+    sortOrder = { carbon_credit_yield: 1 };
+  }
 
-    try {
-        const farms = await Farm.find({ ...keyword }).populate('user', 'username').sort(sortOrder);
-        res.json(farms);
-    } catch (error) {
-        res.status(500).json({ message: 'Server Error' });
-    }
+  try {
+    const farms = await Farm.find({ ...keyword })
+      .populate("user", "username")
+      .sort(sortOrder);
+    res.json(farms);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
 };
 
 // @desc    Get single farm
