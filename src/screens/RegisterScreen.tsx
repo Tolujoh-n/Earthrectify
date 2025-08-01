@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useUser } from "../components/UserContext"; // ✅ Make sure this path is correct
 
 const RegisterScreen = () => {
   const [username, setUsername] = useState("");
@@ -13,42 +14,54 @@ const RegisterScreen = () => {
   const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
+  const { user, setUser } = useUser();
+
+  useEffect(() => {
+    if (user?.token) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
       setMessage("Passwords do not match");
-    } else {
-      setMessage(null);
-      try {
-        setLoading(true);
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        };
+      return;
+    }
 
-        const { data } = await axios.post(
-          "/api/users/register",
-          { username, email, password, walletAddress },
-          config
-        );
+    setMessage(null);
+    setError(null);
 
-        setLoading(false);
-        // Store user info and token separately for easy access
-        localStorage.setItem("userInfo", JSON.stringify(data));
-        if (data.token) {
-          localStorage.setItem("token", data.token);
-        }
-        navigate("/");
-      } catch (error: any) {
-        setLoading(false);
-        setError(
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message
-        );
-      }
+    try {
+      setLoading(true);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      const { data } = await axios.post(
+        "/api/users/register",
+        {
+          username,
+          email,
+          password,
+          wallet_address: walletAddress, // ✅ match backend expected key
+        },
+        config
+      );
+
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      setUser(data);
+
+      setLoading(false);
+      navigate("/");
+    } catch (error: any) {
+      setLoading(false);
+      setError(
+        error.response?.data?.message || error.message || "Registration failed"
+      );
     }
   };
 
@@ -58,6 +71,7 @@ const RegisterScreen = () => {
         <h2 className="text-2xl font-bold text-center text-green-700">
           Create Your Account
         </h2>
+
         {message && (
           <div className="p-2 text-white bg-red-500 rounded">{message}</div>
         )}
@@ -67,6 +81,7 @@ const RegisterScreen = () => {
         {loading && (
           <div className="p-2 text-white bg-blue-500 rounded">Loading...</div>
         )}
+
         <form onSubmit={submitHandler} className="space-y-6">
           <div>
             <label className="text-sm font-bold text-gray-600">Username</label>
@@ -78,10 +93,9 @@ const RegisterScreen = () => {
               required
             />
           </div>
+
           <div>
-            <label className="text-sm font-bold text-gray-600">
-              Email Address
-            </label>
+            <label className="text-sm font-bold text-gray-600">Email</label>
             <input
               type="email"
               value={email}
@@ -90,6 +104,7 @@ const RegisterScreen = () => {
               required
             />
           </div>
+
           <div>
             <label className="text-sm font-bold text-gray-600">Password</label>
             <input
@@ -100,6 +115,7 @@ const RegisterScreen = () => {
               required
             />
           </div>
+
           <div>
             <label className="text-sm font-bold text-gray-600">
               Confirm Password
@@ -112,6 +128,7 @@ const RegisterScreen = () => {
               required
             />
           </div>
+
           <div>
             <label className="text-sm font-bold text-gray-600">
               Wallet Address (Optional)
@@ -123,15 +140,15 @@ const RegisterScreen = () => {
               className="w-full p-2 mt-1 border rounded-md"
             />
           </div>
-          <div>
-            <button
-              type="submit"
-              className="w-full py-2 text-white bg-green-600 rounded-md hover:bg-green-700"
-            >
-              Register
-            </button>
-          </div>
+
+          <button
+            type="submit"
+            className="w-full py-2 text-white bg-green-600 rounded-md hover:bg-green-700"
+          >
+            Register
+          </button>
         </form>
+
         <div className="text-center">
           <p className="text-sm text-gray-600">
             Already have an account?{" "}

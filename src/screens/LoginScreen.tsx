@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useUser } from "../components/UserContext"; // ✅ Make sure this path is correct
 
 const LoginScreen = () => {
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
@@ -10,18 +11,21 @@ const LoginScreen = () => {
   const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
+  const { user, setUser } = useUser(); // ✅ Get user and setUser from context
 
   useEffect(() => {
-    const userInfo = localStorage.getItem("userInfo");
-    if (userInfo) {
+    if (user?.token) {
       navigate("/");
     }
-  }, [navigate]);
+  }, [user, navigate]);
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
     try {
       setLoading(true);
+
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -30,19 +34,20 @@ const LoginScreen = () => {
 
       const { data } = await axios.post(
         "/api/users/login",
-        { usernameOrEmail, password, walletAddress },
+        { usernameOrEmail, password, wallet_address: walletAddress },
         config
       );
 
-      setLoading(false);
+      // ✅ Save to localStorage and update context
       localStorage.setItem("userInfo", JSON.stringify(data));
+      setUser(data);
+
+      setLoading(false);
       navigate("/");
     } catch (error: any) {
       setLoading(false);
       setError(
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
+        error.response?.data?.message || error.message || "Something went wrong"
       );
     }
   };
@@ -69,6 +74,7 @@ const LoginScreen = () => {
               value={usernameOrEmail}
               onChange={(e) => setUsernameOrEmail(e.target.value)}
               className="w-full p-2 mt-1 border rounded-md"
+              required
             />
           </div>
           <div>
@@ -78,6 +84,7 @@ const LoginScreen = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-2 mt-1 border rounded-md"
+              required
             />
           </div>
           <div className="text-center text-gray-600">OR</div>

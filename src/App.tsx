@@ -12,31 +12,37 @@ import BecomeVerifierScreen from "./screens/BecomeVerifierScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import WalletScreen from "./screens/WalletScreen";
 import ProfileEditScreen from "./screens/ProfileEditScreen";
+import { UserProvider } from "./components/UserContext";
 
 function App() {
   return (
-    <Router>
-      <Header />
-      <main className="py-3">
-        <div className="container mx-auto">
-          <Routes>
-            <Route path="/register" element={<RegisterScreen />} />
-            <Route path="/login" element={<LoginScreen />} />
-            <Route path="/add-farm" element={<AddFarmScreen />} />
-            <Route path="/farm/:id" element={<FarmDetailsScreen />} />
-            <Route
-              path="/verifier/farms"
-              element={<VerifierFarmListScreen />}
-            />
-            <Route path="/become-verifier" element={<BecomeVerifierScreen />} />
-            <Route path="/profile" element={<ProfileScreen />} />
-            <Route path="/profile/edit" element={<ProfileEditScreen />} />
-            <Route path="/wallet" element={<WalletScreen />} />
-            <Route path="/" element={<DashboardScreen />} />
-          </Routes>
-        </div>
-      </main>
-    </Router>
+    <UserProvider>
+      <Router>
+        <Header />
+        <main className="py-3">
+          <div className="container mx-auto">
+            <Routes>
+              <Route path="/register" element={<RegisterScreen />} />
+              <Route path="/login" element={<LoginScreen />} />
+              <Route path="/add-farm" element={<AddFarmScreen />} />
+              <Route path="/farm/:id" element={<FarmDetailsScreen />} />
+              <Route
+                path="/verifier/farms"
+                element={<VerifierFarmListScreen />}
+              />
+              <Route
+                path="/become-verifier"
+                element={<BecomeVerifierScreen />}
+              />
+              <Route path="/profile" element={<ProfileScreen />} />
+              <Route path="/profile/edit" element={<ProfileEditScreen />} />
+              <Route path="/wallet" element={<WalletScreen />} />
+              <Route path="/" element={<DashboardScreen />} />
+            </Routes>
+          </div>
+        </main>
+      </Router>
+    </UserProvider>
   );
 }
 

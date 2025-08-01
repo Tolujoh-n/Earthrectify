@@ -1,12 +1,14 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../components/UserContext"; // Make sure this path is correct
 
 const Header = () => {
   const navigate = useNavigate();
-  const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+  const { user, setUser } = useUser();
 
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
+    setUser(null);
     navigate("/login");
   };
 
@@ -16,26 +18,25 @@ const Header = () => {
         EarthRectify
       </Link>
       <nav className="space-x-4">
-        {userInfo.token && (
-          <Link to="/wallet" className="hover:text-gray-200">
-            Wallet
-          </Link>
+        {user?.token && (
+          <>
+            <Link to="/wallet" className="hover:text-gray-200">
+              Wallet
+            </Link>
+            <Link to="/profile" className="hover:text-gray-200">
+              Profile
+            </Link>
+            {user.isVerifier && (
+              <Link to="/verifier/farms" className="hover:text-gray-200">
+                Verify Farms
+              </Link>
+            )}
+            <button onClick={logoutHandler} className="hover:text-gray-200">
+              Logout
+            </button>
+          </>
         )}
-        {userInfo.token && (
-          <Link to="/profile" className="hover:text-gray-200">
-            Profile
-          </Link>
-        )}
-        {userInfo.token && userInfo.isVerifier && (
-          <Link to="/verifier/farms" className="hover:text-gray-200">
-            Verify Farms
-          </Link>
-        )}
-        {userInfo.token ? (
-          <button onClick={logoutHandler} className="hover:text-gray-200">
-            Logout
-          </button>
-        ) : (
+        {!user?.token && (
           <Link to="/login" className="hover:text-gray-200">
             Login
           </Link>
