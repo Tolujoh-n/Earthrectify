@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../components/UserContext";
 
 const BecomeVerifierScreen = () => {
+  const { user, setUser } = useUser();
   const [idType, setIdType] = useState("NIN");
   const [idNumber, setIdNumber] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");

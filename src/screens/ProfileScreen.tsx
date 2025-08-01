@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useUser } from "../components/UserContext";
 
 const ProfileScreen = () => {
   const [user, setUser] = useState<any>(null);

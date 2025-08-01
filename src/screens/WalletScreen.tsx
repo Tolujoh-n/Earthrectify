@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Modal from "../components/Modal";
 import axios from "axios";
+import { useUser } from "../components/UserContext";
 
 const WalletScreen = () => {
+  const { user, setUser } = useUser();
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
   const [isSwapModalOpen, setIsSwapModalOpen] = useState(false);

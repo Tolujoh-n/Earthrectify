@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useUser } from "../components/UserContext";
 
 const DashboardScreen = () => {
+  const { user, setUser } = useUser();
   const [stats, setStats] = useState({
     totalFarmers: 0,
     totalVerifiers: 0,

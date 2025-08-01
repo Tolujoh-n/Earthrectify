@@ -3,8 +3,10 @@ import axios from "axios";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import Modal from "../components/Modal";
+import { useUser } from "../components/UserContext";
 
 const FarmDetailsScreen = () => {
+  const { user, setUser } = useUser();
   const { id } = useParams<{ id: string }>();
   const [farm, setFarm] = useState<any>(null);
   const [loading, setLoading] = useState(true);
