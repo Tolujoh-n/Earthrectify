@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useUser } from "../components/UserContext"; // Make sure this path is correct
+import { useUser } from "../components/UserContext";
+import logo from "../assets/img/earthec-white-no-bg.png";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -12,13 +13,19 @@ const Header = () => {
     navigate("/login");
   };
 
+  const loginHandler = () => {
+    navigate("/login");
+  };
+
   return (
     <header className="bg-green-600 text-white p-4 flex justify-between items-center">
-      <Link to="/" className="text-xl font-bold">
-        EarthRectify
+      <Link to="/" className="flex items-center">
+        <img src={logo} alt="EarthRectify Logo" className="h-8 w-8 mr-0" />
+        <span className="text-xl font-bold ml-0">arthRectify</span>
       </Link>
-      <nav className="space-x-4">
-        {user?.token && (
+
+      <nav className="space-x-4 flex items-center">
+        {user?.token ? (
           <>
             <Link to="/wallet" className="hover:text-gray-200">
               Wallet
@@ -31,15 +38,20 @@ const Header = () => {
                 Verify Farms
               </Link>
             )}
-            <button onClick={logoutHandler} className="hover:text-gray-200">
+            <button
+              onClick={logoutHandler}
+              className="bg-white text-green-600 px-3 py-1 rounded hover:bg-gray-100"
+            >
               Logout
             </button>
           </>
-        )}
-        {!user?.token && (
-          <Link to="/login" className="hover:text-gray-200">
+        ) : (
+          <button
+            onClick={loginHandler}
+            className="bg-white text-green-600 px-3 py-1 rounded hover:bg-gray-100"
+          >
             Login
-          </Link>
+          </button>
         )}
       </nav>
     </header>
