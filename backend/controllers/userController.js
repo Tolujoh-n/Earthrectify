@@ -43,13 +43,29 @@ const loginUser = async (req, res) => {
   const { usernameOrEmail, password, wallet_address } = req.body;
 
   let user;
+
   if (wallet_address) {
     user = await User.findOne({ wallet_address });
-  } else {
-    user = await User.findOne({
-      $or: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
-    });
+
+    if (user) {
+      return res.json({
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        wallet_address: user.wallet_address,
+        isVerifier: user.isVerifier,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(401);
+      throw new Error("No user found with this wallet address");
+    }
   }
+
+  // Traditional login
+  user = await User.findOne({
+    $or: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
+  });
 
   if (user && (await user.matchPassword(password))) {
     res.json({
@@ -60,12 +76,9 @@ const loginUser = async (req, res) => {
       isVerifier: user.isVerifier,
       token: generateToken(user._id),
     });
-  } else if (user) {
-    res.status(401);
-    throw new Error("Invalid password");
   } else {
     res.status(401);
-    throw new Error("Invalid email or username");
+    throw new Error("Invalid credentials");
   }
 };
 
