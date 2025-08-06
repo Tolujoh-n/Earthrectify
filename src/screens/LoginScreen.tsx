@@ -13,6 +13,41 @@ const LoginScreen = () => {
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const { accountId, walletInterface } = useWalletInterface();
+  const [walletLoggingIn, setWalletLoggingIn] = useState(false);
+
+  useEffect(() => {
+    const loginWithWallet = async () => {
+      if (!accountId || user?.token) return;
+
+      setWalletLoggingIn(true);
+      setError(null);
+
+      try {
+        const { data } = await axios.post(
+          "/api/users/login",
+          { wallet_address: accountId },
+          { headers: { "Content-Type": "application/json" } }
+        );
+
+        localStorage.setItem("userInfo", JSON.stringify(data));
+        setUser(data);
+        navigate("/");
+      } catch (error: any) {
+        setError(
+          error.response?.data?.message ||
+            error.message ||
+            "Wallet login failed"
+        );
+      } finally {
+        setWalletLoggingIn(false);
+      }
+    };
+
+    if (accountId && !user?.token) {
+      loginWithWallet();
+      setOpen(false); // closes wallet dialog
+    }
+  }, [accountId]);
 
   const handleConnect = async () => {
     if (accountId) {
@@ -117,9 +152,10 @@ const LoginScreen = () => {
             <div>
               <button
                 type="submit"
-                className="w-full py-2 text-white bg-green-600 rounded-md hover:bg-green-700"
+                className="w-full py-2 text-white bg-green-600 rounded-md hover:bg-green-700 disabled:opacity-50"
+                disabled={loading || walletLoggingIn}
               >
-                Login
+                {loading ? "Logging in..." : "Login"}
               </button>
             </div>
           </form>
@@ -127,9 +163,14 @@ const LoginScreen = () => {
             <button
               type="button"
               onClick={handleConnect}
-              className="w-full py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              className="w-full py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50"
+              disabled={walletLoggingIn}
             >
-              {accountId ? `Connected: ${accountId}` : "Connect Wallet"}
+              {walletLoggingIn
+                ? "Logging in..."
+                : accountId
+                ? `Connected: ${accountId}`
+                : "Connect Wallet"}
             </button>
           </div>
 

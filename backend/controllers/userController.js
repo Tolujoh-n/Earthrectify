@@ -7,11 +7,27 @@ const generateToken = require("../utils/generateToken");
 const registerUser = async (req, res) => {
   const { username, email, password, wallet_address } = req.body;
 
-  const userExists = await User.findOne({ email });
+  let userExists;
 
-  if (userExists) {
-    res.status(400);
-    throw new Error("User already exists");
+  if (wallet_address) {
+    userExists = await User.findOne({ wallet_address });
+    if (userExists) {
+      res.status(400);
+      throw new Error("Wallet already registered");
+    }
+  } else {
+    userExists = await User.findOne({
+      $or: [{ email }, { username }],
+    });
+    if (userExists) {
+      res.status(400);
+      throw new Error("User already exists");
+    }
+
+    if (!password || !username || !email) {
+      res.status(400);
+      throw new Error("Username, email, and password are required");
+    }
   }
 
   const user = await User.create({

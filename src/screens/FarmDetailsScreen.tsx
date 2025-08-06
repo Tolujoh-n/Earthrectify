@@ -25,7 +25,7 @@ const FarmDetailsScreen = () => {
   const [reporterEmail, setReporterEmail] = useState("");
   const [reportText, setReportText] = useState("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [farmName, setFarmName] = useState('');
+  const [farmName, setFarmName] = useState("");
   const [thumbnail, setThumbnail] = useState<File | null>(null);
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
@@ -209,7 +209,10 @@ const FarmDetailsScreen = () => {
         formData.append("thumbnail_image", thumbnail);
       }
       formData.append("farm_business_name", farmName);
-      formData.append("land_mass", JSON.stringify({ length: landLength, width: landWidth }));
+      formData.append(
+        "land_mass",
+        JSON.stringify({ length: landLength, width: landWidth })
+      );
 
       const { data } = await axios.put(`/api/farms/${id}`, formData, config);
       setFarm(data);
@@ -238,7 +241,10 @@ const FarmDetailsScreen = () => {
                 <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-200 text-blue-800">
                   Your Farm
                 </span>
-                <button onClick={() => setIsEditModalOpen(true)} className="p-2 bg-white rounded-full shadow">
+                <button
+                  onClick={() => setIsEditModalOpen(true)}
+                  className="p-2 bg-white rounded-full shadow"
+                >
                   {/* Edit icon */}
                 </button>
               </div>
@@ -324,25 +330,38 @@ const FarmDetailsScreen = () => {
               <div>
                 <h3 className="text-xl font-bold mb-2">Review</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="font-bold mb-2">Farm Location</h4>
-                    <MapContainer
-                      center={[51.505, -0.09]}
-                      zoom={13}
-                      scrollWheelZoom={false}
-                      style={{ height: "400px", width: "100%" }}
-                    >
-                      <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      />
-                      <Marker position={[51.505, -0.09]}>
-                        <Popup>
-                          A pretty CSS3 popup. <br /> Easily customizable.
-                        </Popup>
-                      </Marker>
-                    </MapContainer>
+                  <div className="flex flex-col md:flex-row gap-6">
+                    {/* Map Section */}
+                    <div className="md:w-2/3 w-full">
+                      <h4 className="font-bold mb-2">Farm Location</h4>
+                      <MapContainer
+                        center={[51.505, -0.09]}
+                        zoom={13}
+                        scrollWheelZoom={false}
+                        style={{ height: "400px", width: "100%" }}
+                      >
+                        <TileLayer
+                          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
+                        <Marker position={[51.505, -0.09]}>
+                          <Popup>
+                            A pretty CSS3 popup. <br /> Easily customizable.
+                          </Popup>
+                        </Marker>
+                      </MapContainer>
+                    </div>
+
+                    {/* Info Section */}
+                    <div className="md:w-1/3 w-full space-y-4">
+                      <h4 className="font-bold mb-2">Farm Details</h4>
+                      <p className="text-gray-700">Soil Type: Loamy</p>
+                      <p className="text-gray-700">Altitude: 250 meters</p>
+                      <p className="text-gray-700">Crop: Cassava</p>
+                      {/* You can add more info here */}
+                    </div>
                   </div>
+
                   <div>
                     <h4 className="font-bold mb-2">Land Photos</h4>
                     <div className="grid grid-cols-2 gap-2">

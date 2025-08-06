@@ -14,11 +14,47 @@ const RegisterScreen = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [walletRegistering, setWalletRegistering] = useState(false);
 
   const navigate = useNavigate();
   const { user, setUser } = useUser();
   const [open, setOpen] = useState(false);
   const { accountId, walletInterface } = useWalletInterface();
+
+  useEffect(() => {
+    const registerWithWallet = async () => {
+      if (!accountId || user?.token) return;
+
+      setWalletRegistering(true);
+      setMessage(null);
+      setError(null);
+
+      try {
+        const { data } = await axios.post(
+          "/api/users/register",
+          { wallet_address: accountId },
+          { headers: { "Content-Type": "application/json" } }
+        );
+
+        localStorage.setItem("userInfo", JSON.stringify(data));
+        setUser(data);
+        navigate("/login");
+      } catch (error: any) {
+        setError(
+          error.response?.data?.message ||
+            error.message ||
+            "Wallet registration failed"
+        );
+      } finally {
+        setWalletRegistering(false);
+      }
+    };
+
+    if (accountId && !user?.token) {
+      registerWithWallet();
+      setOpen(false); // close wallet dialog after connecting
+    }
+  }, [accountId]);
 
   const handleConnect = async () => {
     if (accountId) {
@@ -154,18 +190,29 @@ const RegisterScreen = () => {
 
             <button
               type="submit"
-              className="w-full py-2 text-white bg-green-600 rounded-md hover:bg-green-700"
+              className="w-full py-2 text-white bg-green-600 rounded-md hover:bg-green-700 disabled:opacity-50"
+              disabled={loading || walletRegistering}
             >
-              Register
+              {loading ? "Registering..." : "Register"}
             </button>
           </form>
+          <div className="text-center">
+            <p className="text-sm text-red-600">
+              Recommended: Register with usename instead of wallet
+            </p>
+          </div>
           <div>
             <button
               type="button"
               onClick={handleConnect}
-              className="w-full py-2 mt-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              className="w-full py-2 mt-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50"
+              disabled={walletRegistering}
             >
-              {accountId ? `Connected: ${accountId}` : "Connect Wallet"}
+              {walletRegistering
+                ? "Registering..."
+                : accountId
+                ? `Connected: ${accountId}`
+                : "Connect Wallet"}
             </button>
           </div>
 

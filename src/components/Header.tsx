@@ -11,14 +11,6 @@ const Header = () => {
   const [open, setOpen] = useState(false);
   const { accountId, walletInterface } = useWalletInterface();
 
-  const handleConnect = async () => {
-    if (accountId) {
-      walletInterface.disconnect();
-    } else {
-      setOpen(true);
-    }
-  };
-
   useEffect(() => {
     if (accountId) {
       setOpen(false);
@@ -28,7 +20,6 @@ const Header = () => {
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
     setUser(null);
-    handleConnect();
     navigate("/login");
   };
 
@@ -58,12 +49,17 @@ const Header = () => {
                   Verify Farms
                 </Link>
               )}
-              <button
-                onClick={logoutHandler}
-                className="bg-white text-green-600 px-3 py-1 rounded hover:bg-gray-100"
-              >
-                Logout
-              </button>
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-white font-medium">
+                  {user?.username || accountId}
+                </span>
+                <button
+                  onClick={logoutHandler}
+                  className="bg-white text-green-600 px-3 py-1 rounded hover:bg-gray-100"
+                >
+                  Logout
+                </button>
+              </div>
             </>
           ) : (
             <button
