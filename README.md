@@ -1,10 +1,22 @@
-# Getting Started with Create React App
+# Earthrectify
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Building an ecosystem where fighting climate change is transparent, fair, profitable, and part of daily life. By enabling large-scale, verifiable carbon capture through nature-based solutions—particularly algae farming and biomass conversion.
 
-## Available Scripts
+## Start the Frontend
 
-In the project directory, you can run:
+### `git clone https://github.com/Tolujoh-n/Earthrectify`
+
+### `cd earthrectify`
+
+### `npm install --legacy-peer-deps`
+
+### `npm start`
+
+## Start the backend
+
+### `cd backend`
+
+### `npm install --legacy-peer-deps`
 
 ### `npm start`
 
