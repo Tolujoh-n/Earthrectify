@@ -71,11 +71,6 @@ const Header = () => {
           )}
         </nav>
       </header>
-      <WalletSelectionDialog
-        open={open}
-        setOpen={setOpen}
-        onClose={() => setOpen(false)}
-      />
     </>
   );
 };

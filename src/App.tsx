@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import RegisterScreen from "./screens/RegisterScreen";
@@ -16,6 +16,14 @@ import { UserProvider } from "./components/UserContext";
 import { AllWalletsProvider } from "./services/wallets/AllWalletsProvider";
 
 function App() {
+  useEffect(() => {
+    window.addEventListener("error", function (e) {
+      if (e.message.includes("WebSocket connection failed")) {
+        e.preventDefault();
+        console.warn("Suppressed WalletConnect WebSocket error");
+      }
+    });
+  }, []);
   return (
     <UserProvider>
       <AllWalletsProvider>

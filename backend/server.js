@@ -16,10 +16,13 @@ dotenv.config();
 const app = express();
 
 mongoose
-  .connect("mongodb://localhost:27017/authDB", {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-  })
+  .connect(
+    "mongodb+srv://tolujohnofficial:0O6OhRiBgMDHOsDM@cluster0.rxkcsyh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    {
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+    }
+  )
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log(err));
 

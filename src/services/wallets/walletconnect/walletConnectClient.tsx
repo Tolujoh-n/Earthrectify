@@ -31,7 +31,7 @@ import EventEmitter from "events";
 const refreshEvent = new EventEmitter();
 
 // Create a new project in walletconnect cloud to generate a project id
-const walletConnectProjectId = "377d75bb6f86a2ffd427d032ff6ea7d3";
+const walletConnectProjectId = "e501028ea58f70c94a1ea8e0ef05c3f3";
 const currentNetworkConfig = appConfig.networks.testnet;
 const hederaNetwork = currentNetworkConfig.network;
 const hederaClient = Client.forName(hederaNetwork);
@@ -39,8 +39,8 @@ const hederaClient = Client.forName(hederaNetwork);
 // Adapted from walletconnect dapp example:
 // https://github.com/hashgraph/hedera-wallet-connect/blob/main/src/examples/typescript/dapp/main.ts#L87C1-L101C4
 const metadata: SignClientTypes.Metadata = {
-  name: "Hedera CRA Template",
-  description: "Hedera CRA Template",
+  name: "Earthrectify",
+  description: "Earthrectify",
   url: window.location.origin,
   icons: [window.location.origin + "/logo192.png"],
 };
@@ -56,6 +56,11 @@ const dappConnector = new DAppConnector(
 // ensure walletconnect is initialized only once
 let walletConnectInitPromise: Promise<void> | undefined = undefined;
 const initializeWalletConnect = async () => {
+  console.log("WalletConnect Project ID:", walletConnectProjectId);
+  console.log(
+    "WalletConnect Client Version:",
+    dappConnector.walletConnectClient?.version
+  );
   if (walletConnectInitPromise === undefined) {
     walletConnectInitPromise = dappConnector.init();
   }
