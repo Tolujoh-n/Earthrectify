@@ -402,7 +402,7 @@ const FarmDetailsScreen = () => {
                           onClick={() => setIsModalOpen(true)}
                           className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
                         >
-                          Update Farm Parameters
+                          Approve Farm Parameters
                         </button>
                         <button
                           onClick={damagedHandler}
@@ -489,7 +489,7 @@ const FarmDetailsScreen = () => {
             type="submit"
             className="mt-4 w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
           >
-            Update
+            Approve Farm
           </button>
         </form>
       </Modal>
