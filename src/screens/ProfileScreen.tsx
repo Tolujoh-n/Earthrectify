@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useUser } from "../components/UserContext";
+import { BACKEND_URL } from "../config/constants";
 
 const ProfileScreen = () => {
   const [user, setUser] = useState<any>(null);
@@ -19,13 +20,13 @@ const ProfileScreen = () => {
           },
         };
         const { data: userData } = await axios.get(
-          "/api/users/profile",
+          `${BACKEND_URL}/api/users/profile`,
           config
         );
         setUser(userData);
 
         const { data: farmsData } = await axios.get(
-          `/api/farms?user=${userData._id}`,
+          `${BACKEND_URL}/api/farms/user`,
           config
         );
         setFarms(farmsData);
@@ -135,27 +136,38 @@ const ProfileScreen = () => {
             </div>
             <div className="mt-8">
               <h2 className="text-2xl font-bold mb-4">Your Farms</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {farms.map((farm: any) => (
-                  <div
-                    key={farm._id}
-                    className="bg-white shadow-lg rounded-lg overflow-hidden"
-                  >
-                    <Link to={`/farm/${farm._id}`}>
-                      <div className="p-4">
-                        <h3 className="text-xl font-bold">{farm.name}</h3>
-                        <p className="text-gray-600">
-                          Land Mass:{" "}
-                          {farm.land_mass.length * farm.land_mass.width} m²
-                        </p>
-                        <p className="text-gray-600">
-                          Carbon Credit Yield: {farm.carbon_credit_yield}
-                        </p>
-                      </div>
-                    </Link>
-                  </div>
-                ))}
-              </div>
+              {farms.length === 0 ? (
+                <p className="text-gray-500">
+                  You haven't posted any farms yet.
+                </p>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {farms.map((farm: any) => (
+                    <div
+                      key={farm._id}
+                      className="bg-white shadow-lg rounded-lg overflow-hidden"
+                    >
+                      <Link to={`/farm/${farm._id}`}>
+                        <img
+                          src={farm.thumbnail_image}
+                          alt={farm.farm_business_name}
+                          className="w-full h-48 object-cover"
+                        />
+                        <div className="p-4">
+                          <h3 className="text-xl font-bold">{farm.name}</h3>
+                          <p className="text-gray-600">
+                            Land Mass:{" "}
+                            {farm.land_mass.length * farm.land_mass.width} m²
+                          </p>
+                          <p className="text-gray-600">
+                            Carbon Credit Yield: {farm.carbon_credit_yield}
+                          </p>
+                        </div>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )

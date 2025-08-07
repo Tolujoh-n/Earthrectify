@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../components/UserContext"; // adjust path
+import { useUser } from "../components/UserContext";
+import { BACKEND_URL } from "../config/constants";
 
 const AddFarmScreen = () => {
   const { user } = useUser();
@@ -32,7 +33,7 @@ const AddFarmScreen = () => {
   useEffect(() => {
     const fetchFarms = async () => {
       try {
-        const res = await axios.get("/api/farms");
+        const res = await axios.get(`${BACKEND_URL}/api/farms`);
         setFarms(res.data);
       } catch {}
     };
@@ -64,7 +65,7 @@ const AddFarmScreen = () => {
 
     try {
       setLoading(true);
-      await axios.post("/api/farms", formData, {
+      await axios.post(`${BACKEND_URL}/api/farms`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${user.token}`,
@@ -200,6 +201,13 @@ const AddFarmScreen = () => {
           <label className="block text-sm font-medium text-gray-700">
             Set Thumbnail Image
           </label>
+          {/* {thumbnail && (
+            <img
+              src={URL.createObjectURL(thumbnail)}
+              alt="Thumbnail Preview"
+              className="mt-2 w-32 h-32 object-cover rounded"
+            />
+          )} */}
           <input
             type="file"
             onChange={(e) =>

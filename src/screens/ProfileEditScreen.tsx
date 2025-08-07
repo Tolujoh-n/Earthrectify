@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../components/UserContext";
+import { BACKEND_URL } from "../config/constants";
 
 const ProfileEditScreen = () => {
   const { user, setUser } = useUser();
@@ -22,7 +23,10 @@ const ProfileEditScreen = () => {
         const config = {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         };
-        const { data } = await axios.get("/api/users/profile", config);
+        const { data } = await axios.get(
+          `${BACKEND_URL}/api/users/profile`,
+          config
+        );
         setUsername(data.username);
         setEmail(data.email);
         setBio(data.bio || "");
@@ -45,7 +49,7 @@ const ProfileEditScreen = () => {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         };
         const { data } = await axios.put(
-          "/api/users/profile",
+          `${BACKEND_URL}/api/users/profile`,
           { username, email, bio, password },
           config
         );

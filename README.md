@@ -16,6 +16,8 @@ Building an ecosystem where fighting climate change is transparent, fair, profit
 
 ### `cd backend`
 
+- Create a new file in the root `.env` copy and paste the code in the `.env.example` file to the .env and set them to your variables
+
 ### `npm install --legacy-peer-deps`
 
 ### `npm start`

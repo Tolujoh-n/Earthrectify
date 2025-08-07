@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Modal from "../components/Modal";
 import axios from "axios";
 import { useUser } from "../components/UserContext";
+import { BACKEND_URL } from "../config/constants";
 
 const WalletScreen = () => {
   const { user, setUser } = useUser();
@@ -19,7 +20,10 @@ const WalletScreen = () => {
             Authorization: `Bearer ${userInfo.token}`,
           },
         };
-        const { data } = await axios.get("/api/transactions", config);
+        const { data } = await axios.get(
+          `${BACKEND_URL}/api/transactions`,
+          config
+        );
         setTransactions(data);
       } catch (error) {
         // Handle error

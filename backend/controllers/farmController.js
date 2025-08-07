@@ -5,6 +5,9 @@ const Farm = require("../models/farmModel");
 // @access  Private
 const createFarm = async (req, res) => {
   try {
+    console.log("REQ BODY:", req.body);
+    console.log("REQ FILES:", req.files);
+
     const {
       farm_business_name,
       country,
@@ -14,7 +17,6 @@ const createFarm = async (req, res) => {
       phone_number,
     } = req.body;
 
-    // Parse land_mass string to object
     const parsedLandMass = JSON.parse(land_mass || "{}");
 
     const farm = new Farm({
@@ -27,16 +29,18 @@ const createFarm = async (req, res) => {
         width: parsedLandMass.width,
       },
       is_new_farm,
-      land_ownership_documents: req.files.land_ownership_documents?.[0]?.path,
-      land_photos: req.files.land_photos?.map((file) => file.path) || [],
-      thumbnail_image: req.files.thumbnail_image?.[0]?.path,
+      land_ownership_documents:
+        req.files?.land_ownership_documents?.[0]?.path || null,
+      land_photos: req.files?.land_photos?.map((file) => file.path) || [],
+      thumbnail_image: req.files?.thumbnail_image?.[0]?.path || null,
       phone_number,
     });
 
     const createdFarm = await farm.save();
     res.status(201).json(createdFarm);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Farm creation error:", error); // <--- log full error
+    res.status(500).json({ message: error.message || "Server Error" });
   }
 };
 
@@ -77,6 +81,20 @@ const getFarmById = async (req, res) => {
   } else {
     res.status(404);
     throw new Error("Farm not found");
+  }
+};
+
+// @desc    Get farms posted by a specific user
+// @route   GET /api/farms/user
+// @access  Private
+const getUserFarms = async (req, res) => {
+  try {
+    const farms = await Farm.find({ user: req.user._id }).sort({
+      createdAt: -1,
+    });
+    res.json(farms);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch user farms" });
   }
 };
 
@@ -227,6 +245,7 @@ module.exports = {
   createFarm,
   getFarms,
   getFarmById,
+  getUserFarms,
   createFarmComment,
   deleteFarm,
   updateFarm,

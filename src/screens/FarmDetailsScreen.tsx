@@ -4,6 +4,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import Modal from "../components/Modal";
 import { useUser } from "../components/UserContext";
+import { BACKEND_URL } from "../config/constants";
 
 const FarmDetailsScreen = () => {
   const { user, setUser } = useUser();
@@ -35,7 +36,8 @@ const FarmDetailsScreen = () => {
   useEffect(() => {
     const fetchFarm = async () => {
       try {
-        const { data } = await axios.get(`/api/farms/${id}`);
+        const { data } = await axios.get(`${BACKEND_URL}/api/farms/${id}`);
+        console.log("Fetched farm data:", data);
         setFarm(data);
         setLoading(false);
       } catch (error: any) {
@@ -69,11 +71,15 @@ const FarmDetailsScreen = () => {
           Authorization: `Bearer ${userInfo.token}`,
         },
       };
-      await axios.post(`/api/farms/${id}/comments`, { comment }, config);
+      await axios.post(
+        `${BACKEND_URL}/api/farms/${id}/comments`,
+        { comment },
+        config
+      );
       setSubmittingComment(false);
       setComment("");
       // Refetch farm to see new comment
-      const { data } = await axios.get(`/api/farms/${id}`);
+      const { data } = await axios.get(`${BACKEND_URL}/api/farms/${id}`);
       setFarm(data);
     } catch (error) {
       setSubmittingComment(false);
@@ -91,7 +97,7 @@ const FarmDetailsScreen = () => {
         },
       };
       const { data } = await axios.put(
-        `/api/farms/${id}`,
+        `${BACKEND_URL}/api/farms/${id}`,
         { land_mass: { length: landLength, width: landWidth } },
         config
       );
@@ -110,7 +116,7 @@ const FarmDetailsScreen = () => {
             Authorization: `Bearer ${userInfo.token}`,
           },
         };
-        await axios.delete(`/api/farms/${id}`, config);
+        await axios.delete(`${BACKEND_URL}/api/farms/${id}`, config);
         navigate("/");
       } catch (error) {
         // Handle error
@@ -132,7 +138,7 @@ const FarmDetailsScreen = () => {
           },
         };
         const { data } = await axios.put(
-          `/api/farms/${id}`,
+          `${BACKEND_URL}/api/farms/${id}`,
           { status: "Damaged" },
           config
         );
@@ -154,14 +160,14 @@ const FarmDetailsScreen = () => {
         },
       };
       await axios.post(
-        `/api/farms/${id}/activities`,
+        `${BACKEND_URL}/api/farms/${id}/activities`,
         { comment: activityComment },
         config
       );
       setSubmittingActivity(false);
       setActivityComment("");
       // Refetch farm to see new activity
-      const { data } = await axios.get(`/api/farms/${id}`);
+      const { data } = await axios.get(`${BACKEND_URL}/api/farms/${id}`);
       setFarm(data);
     } catch (error) {
       setSubmittingActivity(false);
@@ -179,7 +185,7 @@ const FarmDetailsScreen = () => {
         },
       };
       await axios.post(
-        `/api/farms/${id}/report`,
+        `${BACKEND_URL}/api/farms/${id}/report`,
         { reporterName, reporterEmail, reportText },
         config
       );
@@ -188,7 +194,7 @@ const FarmDetailsScreen = () => {
       setReporterEmail("");
       setReportText("");
       // Refetch farm to see new report
-      const { data } = await axios.get(`/api/farms/${id}`);
+      const { data } = await axios.get(`${BACKEND_URL}/api/farms/${id}`);
       setFarm(data);
     } catch (error) {
       // Handle error
@@ -214,7 +220,11 @@ const FarmDetailsScreen = () => {
         JSON.stringify({ length: landLength, width: landWidth })
       );
 
-      const { data } = await axios.put(`/api/farms/${id}`, formData, config);
+      const { data } = await axios.put(
+        `${BACKEND_URL}/api/farms/${id}`,
+        formData,
+        config
+      );
       setFarm(data);
       setIsEditModalOpen(false);
     } catch (error) {
@@ -232,7 +242,7 @@ const FarmDetailsScreen = () => {
         <>
           <div className="relative">
             <img
-              src={`/${farm.thumbnail_image}`}
+              src={farm.thumbnail_image}
               alt={farm.farm_business_name}
               className="w-full h-64 object-cover rounded-lg"
             />
@@ -368,7 +378,7 @@ const FarmDetailsScreen = () => {
                       {farm.land_photos.map((photo: string, index: number) => (
                         <img
                           key={index}
-                          src={`/${photo}`}
+                          src={photo}
                           alt={`Land photo ${index + 1}`}
                           className="w-full h-auto rounded-lg"
                         />

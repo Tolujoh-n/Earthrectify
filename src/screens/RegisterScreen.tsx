@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useUser } from "../components/UserContext"; // ✅ Make sure this path is correct
+import { useUser } from "../components/UserContext";
 import HBARLogo from "../assets/hbar-logo.svg";
 import { useWalletInterface } from "../services/wallets/useWalletInterface";
 import { WalletSelectionDialog } from "../components/WalletSelectionDialog";
+import { BACKEND_URL } from "../config/constants";
 
 const RegisterScreen = () => {
   const [username, setUsername] = useState("");
@@ -31,7 +32,7 @@ const RegisterScreen = () => {
 
       try {
         const { data } = await axios.post(
-          "/api/users/register",
+          `${BACKEND_URL}/api/users/register`,
           { wallet_address: accountId },
           { headers: { "Content-Type": "application/json" } }
         );
@@ -96,7 +97,7 @@ const RegisterScreen = () => {
       };
 
       const { data } = await axios.post(
-        "/api/users/register",
+        `${BACKEND_URL}/api/users/register`,
         {
           username,
           email,

@@ -1,35 +1,43 @@
 const multer = require("multer");
-const path = require("path");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename(req, file, cb) {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
-    );
+// 🔐 Configure Cloudinary with your credentials
+cloudinary.config({
+  cloud_name: "dxufkhffc",
+  api_key: "226735658796427",
+  api_secret: "YjGUXxKXTl4AJVKIauAyVAOBh7w",
+});
+
+// ✅ Add error-handling + logging
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => {
+    console.log("Uploading file:", file.originalname); // 👈 log file info
+    return {
+      folder: "earthrectify_uploads",
+      public_id: file.originalname.split(".")[0], // optional
+      resource_type: "auto", // "auto" lets Cloudinary handle both images/docs
+      allowed_formats: [
+        "jpg",
+        "jpeg",
+        "png",
+        "pdf",
+        "doc",
+        "docx",
+        "txt",
+        "xls",
+        "xlsx",
+        "ppt",
+        "pptx",
+      ],
+    };
   },
 });
 
-function checkFileType(file, cb) {
-  const filetypes = /jpg|jpeg|png/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
-
-  if (extname && mimetype) {
-    return cb(null, true);
-  } else {
-    cb("Images only!");
-  }
-}
-
 const upload = multer({
   storage,
-  fileFilter: function (req, file, cb) {
-    checkFileType(file, cb);
-  },
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB file size limit
 });
 
 module.exports = upload;

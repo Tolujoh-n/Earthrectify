@@ -2,7 +2,7 @@
   "name": "earthrectify",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:5000",
+  "proxy": "http://localhost:50",
   "dependencies": {
     "@hashgraph/hedera-wallet-connect": "^1.3.0",
     "@hashgraph/sdk": "^2.46.0",

@@ -5,6 +5,7 @@ import { useUser } from "../components/UserContext"; // ✅ Make sure this path 
 import HBARLogo from "../assets/hbar-logo.svg";
 import { useWalletInterface } from "../services/wallets/useWalletInterface";
 import { WalletSelectionDialog } from "../components/WalletSelectionDialog";
+import { BACKEND_URL } from "../config/constants";
 
 const LoginScreen = () => {
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
@@ -24,7 +25,7 @@ const LoginScreen = () => {
 
       try {
         const { data } = await axios.post(
-          "/api/users/login",
+          `${BACKEND_URL}/api/users/login`,
           { wallet_address: accountId },
           { headers: { "Content-Type": "application/json" } }
         );
@@ -86,7 +87,7 @@ const LoginScreen = () => {
       };
 
       const { data } = await axios.post(
-        "/api/users/login",
+        `${BACKEND_URL}/api/users/login`,
         {
           usernameOrEmail: usernameOrEmail || undefined,
           password: password || undefined,

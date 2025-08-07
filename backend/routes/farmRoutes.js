@@ -4,6 +4,7 @@ const {
   createFarm,
   getFarms,
   getFarmById,
+  getUserFarms,
   createFarmComment,
   deleteFarm,
   updateFarm,
@@ -13,6 +14,7 @@ const {
 const { protect } = require("../middleware/authMiddleware");
 const upload = require("../middleware/upload");
 
+router.route("/user").get(protect, getUserFarms);
 router
   .route("/")
   .post(

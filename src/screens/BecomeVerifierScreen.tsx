@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../components/UserContext";
+import { BACKEND_URL } from "../config/constants";
 
 const BecomeVerifierScreen = () => {
   const { user, setUser } = useUser();
@@ -33,10 +34,17 @@ const BecomeVerifierScreen = () => {
           Authorization: `Bearer ${userInfo.token}`,
         },
       };
-      await axios.put("/api/users/become-verifier", formData, config);
+      await axios.put(
+        `${BACKEND_URL}/api/users/become-verifier`,
+        formData,
+        config
+      );
       setLoading(false);
       // Update local storage with new user info
-      const { data } = await axios.get("/api/users/profile", config);
+      const { data } = await axios.get(
+        `${BACKEND_URL}/api/users/profile`,
+        config
+      );
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/");
     } catch (error: any) {

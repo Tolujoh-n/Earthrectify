@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useUser } from "../components/UserContext";
+import { BACKEND_URL } from "../config/constants";
 
 const DashboardScreen = () => {
   const { user, setUser } = useUser();
@@ -20,11 +21,10 @@ const DashboardScreen = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: statsData } = await axios.get("/api/stats");
+        const { data: statsData } = await axios.get(`${BACKEND_URL}/api/stats`);
         setStats(statsData);
 
-        const { data: farmsData } = await axios.get(
-          `/api/farms?search=${searchTerm}&filter=${filter}`
+        const { data: farmsData } = await axios.get(`${BACKEND_URL}/api/farms?search=${searchTerm}&filter=${filter}`
         );
         setFarms(farmsData);
 
