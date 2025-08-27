@@ -425,23 +425,34 @@ const FarmDetailsScreen = () => {
             {activeTab === "comments" && (
               <div>
                 <h3 className="text-xl font-bold mb-2">Comments</h3>
-                <form onSubmit={commentSubmitHandler}>
-                  <textarea
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    className="w-full p-2 border rounded-md"
-                    rows={3}
-                    placeholder="Add a comment..."
-                    required
-                  ></textarea>
-                  <button
-                    type="submit"
-                    disabled={submittingComment}
-                    className="mt-2 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
-                  >
-                    {submittingComment ? "Submitting..." : "Submit"}
-                  </button>
-                </form>
+                {userInfo && userInfo.token ? (
+                  <form onSubmit={commentSubmitHandler}>
+                    <textarea
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      className="w-full p-2 border rounded-md"
+                      rows={3}
+                      placeholder="Add a comment..."
+                      required
+                    ></textarea>
+                    <button
+                      type="submit"
+                      disabled={submittingComment}
+                      className="mt-2 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                    >
+                      {submittingComment ? "Submitting..." : "Submit"}
+                    </button>
+                  </form>
+                ) : (
+                  <p className="text-gray-600 mt-4">
+                    You must be{" "}
+                    <Link to="/login" className="text-green-600 underline">
+                      logged in
+                    </Link>{" "}
+                    to leave a comment.
+                  </p>
+                )}
+
                 <div className="mt-4 space-y-4">
                   {farm.comments.map((c: any) => (
                     <div key={c._id} className="p-4 bg-gray-100 rounded-lg">
