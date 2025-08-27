@@ -464,12 +464,14 @@ const FarmDetailsScreen = () => {
                     </div>
                   ))}
                 </div>
-                <button
-                  onClick={() => setIsReportModalOpen(true)}
-                  className="mt-4 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
-                >
-                  Report Farm
-                </button>
+                {userInfo && userInfo.token && (
+                  <button
+                    onClick={() => setIsReportModalOpen(true)}
+                    className="mt-4 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+                  >
+                    Report Farm
+                  </button>
+                )}
               </div>
             )}
           </div>
