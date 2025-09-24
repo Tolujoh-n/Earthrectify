@@ -35,8 +35,8 @@ const WalletScreen = () => {
   // Dummy data for now
   const tokens = [
     { token: "Hbar", balance: 0, usd: 0 },
-    { token: "ERECO", balance: 1200, usd: 120 },
-    { token: "VERECO", balance: 50, usd: 5 },
+    { token: "ERECO", balance: 0, usd: 0 },
+    { token: "VERECO", balance: 0, usd: 0 },
   ];
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
@@ -59,7 +59,21 @@ const WalletScreen = () => {
               </th>
             </tr>
           </thead>
-          <tbody>{/* Table rows will go here */}</tbody>
+          <tbody>
+            {tokens.map((t) => (
+              <tr key={t.token}>
+                <td className="px-5 py-3 border-b border-gray-200 text-sm">
+                  {t.token}
+                </td>
+                <td className="px-5 py-3 border-b border-gray-200 text-sm">
+                  {t.balance}
+                </td>
+                <td className="px-5 py-3 border-b border-gray-200 text-sm">
+                  ${Number(t.usd).toFixed(2)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
       <div className="mt-8">
