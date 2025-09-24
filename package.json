@@ -5,6 +5,7 @@
   "proxy": "http://localhost:5000",
   "dependencies": {
     "@hashgraph/hedera-wallet-connect": "^1.5.1",
+    "@hashgraph/proto": "^2.23.0",
     "@hashgraph/sdk": "^2.46.0",
     "@openzeppelin/contracts": "^5.4.0",
     "@testing-library/dom": "^10.4.0",
