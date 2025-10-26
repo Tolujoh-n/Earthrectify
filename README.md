@@ -12,7 +12,7 @@ Building an ecosystem where fighting climate change is transparent, fair, profit
 
 ### `npm start`
 
-## Start the backend
+## Start the backend server
 
 ### `cd backend`
 

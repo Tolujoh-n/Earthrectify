@@ -18,7 +18,7 @@ npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox
 
 - Deploy a specific contract by selecting it's migration number `truffle migrate --network hederaTestnet --f 3 --to 3`
 
-##
+## Updated addresses
 
 - ERECO_TOKEN_ADDRESS: 0x9f6055862d50E8B8C9bD29D59e3A8B0dE9b018A0
 - VERECO_TOKEN_ADDRESS: 0x05A5B5f278d8Df7297b128D2C395A372DF7cDAeA
