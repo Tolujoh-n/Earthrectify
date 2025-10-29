@@ -1,6 +1,6 @@
 # Earthrectify
 
-Building an ecosystem where fighting climate change is transparent, fair, profitable, and part of daily life. By enabling large-scale, verifiable carbon capture through nature-based solutions—particularly algae farming and biomass conversion.
+Building an ecosystem where fighting climate change is transparent, fair, profitable, and part of daily life. By enabling large-scale, verifiable carbon capture through nature-based solutions—particularly algae farming.
 
 ## Start the Frontend
 
@@ -18,6 +18,13 @@ Building an ecosystem where fighting climate change is transparent, fair, profit
 
 - Create a new file in the root `.env` copy and paste the code in the `.env.example` file to the .env and set them to your variables
 
+- To use the localhost backend in frontend, update `/src/config/constant` comment the render backend and un-comment the localhost backend:
+
+```
+// export const BACKEND_URL = "http://localhost:5000";
+export const BACKEND_URL = "https://earthrectify-backend.onrender.com";
+```
+
 ### `npm install --legacy-peer-deps`
 
 ### `npm start`
@@ -27,6 +34,11 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
+
+## File Structure
+### /backend - Holds backend models and conrollers files and folders
+### /smart-contract: - Hold ERECO and VERECO and ATM carbon creadit to fiat contract
+### / - The root directory are frontend files and folders
 
 ### `npm test`
 
