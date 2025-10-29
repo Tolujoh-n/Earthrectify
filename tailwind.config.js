@@ -22,3 +22,4 @@ module.exports = {
   },
   plugins: [],
 };
+// more updates coming soon
